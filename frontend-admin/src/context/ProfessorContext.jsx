@@ -8,7 +8,7 @@ export const ProfessorContext = createContext()
 const ProfessorContextProvider = (props) => {
 
     // Backend base URL from environment variable
-    cont backendUrl = "https://office-hours-backend.onrender.com"
+    const backendUrl = "https://office-hours-backend.onrender.com"
     // const backendUrl = import.meta.env.VITE_BACKEND_URL
     
     // Store the professor's authentication token (if exists in localStorage)
