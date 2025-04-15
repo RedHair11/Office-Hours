@@ -6,7 +6,7 @@ export const AppContext = createContext()
 const AppContextProvider = (props) => {
 
     // Base URL for all backend API requests, loaded from environment variables
-    cont backendUrl = "https://office-hours-backend.onrender.com"
+    const backendUrl = "https://office-hours-backend.onrender.com";
     // const backendUrl = import.meta.env.VITE_BACKEND_URL
     
     // Array of month abbreviations for converting numeric months to readable format
