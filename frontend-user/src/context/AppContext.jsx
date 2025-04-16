@@ -8,8 +8,7 @@ export const AppContext = createContext()
 const AppContextProvider = (props) => {
 
     // Backend API base URL stored in environment variables for security and flexibility
-    const backendUrl = "https://office-hours-backend.onrender.com"
-    // const backendUrl = import.meta.env.VITE_BACKEND_URL
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
     
     // Global state: list of all professors fetched from the backend
     const [professors, setProfessors] = useState([])
