@@ -15,10 +15,7 @@ connectCloudinary()                     // Connect to Cloudinary
 
 // middlewares
 app.use(express.json()) // Middleware to parse incoming requests with JSON payloads
-app.use(cors({
-    origin: ["https://your-frontend-user.onrender.com", "https://your-frontend-admin.onrender.com"],
-    credentials: true
-})) // Middleware to enable Cross-Origin Resource Sharing (CORS)
+app.use(cors()) // Middleware to enable Cross-Origin Resource Sharing (CORS)
 
 // api endpoints
 app.use("/api/user", userRouter) // Route to handle user-related API requests
