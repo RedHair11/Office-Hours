@@ -9,8 +9,8 @@ export const AdminContext = createContext()
 const AdminContextProvider = (props) => {
 
     // Get the backend URL from environment variables
-    const backendUrl = "https://office-hours-backend.onrender.com"
-    // const backendUrl = import.meta.env.VITE_BACKEND_URL
+    //const backendUrl = "https://office-hours-backend.onrender.com"
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
 
     // State to store admin token, fetched from local storage if available
     const [aToken, setAToken] = useState(localStorage.getItem('aToken') ? localStorage.getItem('aToken') : '')
