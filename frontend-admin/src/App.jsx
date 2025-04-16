@@ -20,6 +20,7 @@ const App = () => {
   // Context hooks to get the professor and admin authentication tokens
   const { dToken } = useContext(ProfessorContext)
   const { aToken } = useContext(AdminContext)
+  console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
 
   // If either a professor or admin is logged in
   return dToken || aToken ? (
