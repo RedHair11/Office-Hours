@@ -23,10 +23,12 @@ const DepartmentMenu = () => {
                     <Link to={`/professors/${item.department}`} onClick={() => scrollTo(0, 0)} className='flex flex-col items-center 
                     text-xs cursor-pointer flex-shrink-0 hover:translate-y-[-10px] transition-all duration-500' key={index}>
                         {/* Department image */}
-                        <img className='w-16 sm:w-24 mb-2 ' src={item.image} alt="" />
+                        <div className='bg-primary rounded-full p-5'>
+                        <img className='w-16 sm:w-24 p-1 ' src={item.image} alt="" />
+                        </div>
                         
                          {/* Department name */}
-                        <p>{item.department}</p>
+                        <p className='text-base font-semibold'>{item.department}</p>
                     </Link>
                 ))}
             </div>
