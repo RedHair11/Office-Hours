@@ -170,61 +170,88 @@ const professorProfile = async (req, res) => {
 }
 
 // API function to update a professor's profile (USE FOR UPDATING OFFICE HOURS LATER)
+import { v2 as cloudinary } from 'cloudinary'
+import fs from 'fs'
+
 const updateProfessorProfile = async (req, res) => {
     try {
-         // Extract profId (added by middleware) and the fields to update from the request body
-         const { profId, about, available, officeHours } = req.body;
+        let { profId, about, available, officeHours } = req.body;
+        const imageFile = req.file;
 
-         // --- Basic Validation ---
-         if (!profId) {
-             return res.status(401).json({ success: false, message: 'Authentication required.' });
-         }
-         if (typeof about !== 'string' || typeof available !== 'boolean' || typeof officeHours !== 'object' || officeHours === null) {
-             console.log("Update validation failed. Received:", { about, available, officeHours }); // Log received data on validation fail
-             return res.status(400).json({ success: false, message: 'Invalid data format provided for update.' });
-         }
-         // Add more specific validation for officeHours structure/values if needed here
- 
-         // --- Prepare Update Object ---
-         const updateFields = {
-             about,
-             available,
-             officeHours // Pass the whole officeHours object received from frontend
-         };
- 
-         console.log(`Attempting to update professor ${profId} with:`, JSON.stringify(updateFields, null, 2)); // Log before update
- 
-         // --- Database Update ---
-         // Find the professor by ID and update the specified fields using $set
-         const updatedProfessor = await professorModel.findByIdAndUpdate(
-             profId,
-             { $set: updateFields }, // Use $set to update only the provided fields
-             { new: true, runValidators: true } // Options: return the modified doc, run schema validators
-         ).select('-password'); // Exclude password from the returned updated document
- 
-         // --- Handle Update Result ---
-         if (!updatedProfessor) {
-             return res.status(404).json({ success: false, message: 'Professor not found for update.' });
-         }
- 
-         console.log(`Professor ${profId} updated successfully.`); // Log success
- 
-         // Return a success response with the updated profile data (excluding password)
-         res.json({ success: true, message: 'Profile Updated Successfully', professor: updatedProfessor });
- 
-     } catch (error) {
-         // Log the detailed error for debugging
-         console.error("Error updating professor profile:", error);
- 
-         // Check for Mongoose validation errors specifically
-         if (error.name === 'ValidationError') {
-             return res.status(400).json({ success: false, message: 'Validation failed.', errors: error.errors });
-         }
- 
-         // Send a generic server error response for other errors
-         res.status(500).json({ success: false, message: "Server error updating profile." });
-     }
-}
+        // Convert types
+        if (typeof available === 'string') {
+            available = available === 'true';
+        }
+        if (typeof officeHours === 'string') {
+            try {
+                officeHours = JSON.parse(officeHours);
+            } catch (err) {
+                return res.status(400).json({ success: false, message: 'Invalid officeHours format' });
+            }
+        }
+
+        if (!profId) {
+            return res.status(401).json({ success: false, message: 'Authentication required.' });
+        }
+
+        // Fetch existing professor data
+        const professor = await professorModel.findById(profId);
+        if (!professor) {
+            return res.status(404).json({ success: false, message: 'Professor not found.' });
+        }
+
+        // Always require an image, whether new or existing
+        let finalImageUrl = professor.image || null;
+
+        if (imageFile) {
+            const uploadedImage = await cloudinary.uploader.upload(imageFile.path, {
+                resource_type: "image"
+            });
+            finalImageUrl = uploadedImage.secure_url;
+            fs.unlinkSync(imageFile.path); // remove temp file
+        }
+
+        if (!finalImageUrl) {
+            return res.status(400).json({ success: false, message: 'Profile image is required.' });
+        }
+
+        // Update only if data has changed
+        const updateFields = {};
+
+        if (about !== professor.about) updateFields.about = about;
+        if (available !== professor.available) updateFields.available = available;
+        if (JSON.stringify(officeHours) !== JSON.stringify(professor.officeHours)) {
+            updateFields.officeHours = officeHours;
+        }
+        if (finalImageUrl !== professor.image) updateFields.image = finalImageUrl;
+
+        // If nothing changed, just return success
+        if (Object.keys(updateFields).length === 0) {
+            return res.json({ success: true, message: 'No changes made.', profileData: professor });
+        }
+
+        // Apply update
+        const updatedProfessor = await professorModel.findByIdAndUpdate(
+            profId,
+            { $set: updateFields },
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        res.json({ success: true, message: 'Profile Updated Successfully', profileData: updatedProfessor });
+
+    } catch (error) {
+        console.error("Error updating professor profile:", error);
+
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({ success: false, message: 'Validation failed.', errors: error.errors });
+        }
+
+        res.status(500).json({ success: false, message: "Server error updating profile." });
+    }
+};
+
+
+
 
 // Function to retrieve dashboard data for a professor
 const professorDashboard = async (req, res) => {
