@@ -13,7 +13,7 @@ const DepartmentMenu = () => {
             <p className='sm:w-1/3 text-center text-sm'>Browse through the list of available professors, schedule your meetings today.</p>
             
             {/* Container holding department options horizontally with scroll enabled if overflow */}
-            <div className='flex sm:justify-center gap-4 pt-5 w-full overflow-scroll '>
+            <div className='flex sm:justify-center gap-6 pt-5 w-full overflow-scroll '>
                 
                 {/* Mapping through the departmentData array to create clickable department options */}
                 {departmentData.map((item, index) => (
@@ -23,8 +23,8 @@ const DepartmentMenu = () => {
                     <Link to={`/professors/${item.department}`} onClick={() => scrollTo(0, 0)} className='flex flex-col items-center 
                     text-xs cursor-pointer flex-shrink-0 hover:translate-y-[-10px] transition-all duration-500' key={index}>
                         {/* Department image */}
-                        <div className='bg-primary rounded-full p-5'>
-                        <img className='w-16 sm:w-24 p-1 ' src={item.image} alt="" />
+                        <div className='bg-primary rounded-full p-2'>
+                        <img className='w-16 sm:w-24 p-3 ' src={item.image} alt="" />
                         </div>
                         
                          {/* Department name */}
