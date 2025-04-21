@@ -9,7 +9,9 @@ const ProfessorContextProvider = (props) => {
 
     // Backend base URL from environment variable
     //const backendUrl = "https://office-hours-backend.onrender.com";
-    const backendUrl = import.meta.env.VITE_BACKEND_URL
+    //const backendUrl = import.meta.env.VITE_BACKEND_URL
+    const backendUrl = 'http://localhost:4000'
+
     
     // Store the professor's authentication token (if exists in localStorage)
     const [dToken, setDToken] = useState(localStorage.getItem('dToken') ? localStorage.getItem('dToken') : '')
