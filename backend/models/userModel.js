@@ -17,3 +17,5 @@ const userModel = mongoose.models.user || mongoose.model("user", userSchema);
 
 // Export the 'userModel' so it can be used in other parts of the application
 export default userModel;
+
+//Primary key are automatically created in MongoDB, they are label as "_id"

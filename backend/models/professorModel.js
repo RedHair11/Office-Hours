@@ -53,3 +53,5 @@ const professorModel = mongoose.models.professor || mongoose.model("professor", 
 
 // Export the 'professorModel' so it can be used in other parts of the application
 export default professorModel;
+
+//Primary key are automatically created in MongoDB, they are label as "_id"

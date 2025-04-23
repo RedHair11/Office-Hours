@@ -19,3 +19,6 @@ const appointmentModel = mongoose.models.appointment || mongoose.model("appointm
 
 // Export the 'appointmentModel' so it can be used in other parts of the application
 export default appointmentModel
+
+//Primary key are automatically created in MongoDB, they are label as "_id", foreign key are label as "variableId"
+//mongoose.models from user and professor are used to reference the primary keys to the appointment Schema
