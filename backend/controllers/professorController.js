@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken"; // For creating JSON Web Tokens
 import bcrypt from "bcrypt";    // for password hashing
 import professorModel from "../models/professorModel.js"; // Import the professor model to interact with the database
 import appointmentModel from "../models/appointmentModel.js"; // Import the appointment model to interact with the database
+import { v2 as cloudinary } from 'cloudinary'
+import fs from 'fs'
 
 // Function for professor login
 const loginProfessor = async (req, res) => {
@@ -116,13 +118,11 @@ const appointmentComplete = async (req, res) => {
 // function to get the list of all professors, excluding sensitive information
 const professorList = async (req, res) => {
     try {
-        // Find all professors in the database, but exclude 'password' and 'email' fields for privacy
         // Return the list of professors as a success response
         const professors = await professorModel.find({}).select(['-password',])
         res.json({ success: true, professors })
 
     } catch (error) {
-        // If an error occurs during the process, log the error for debugging
         // If an error occurs during the process, log the error for debugging
         console.log(error)
         res.json({ success: false, message: error.message })
@@ -169,9 +169,6 @@ const professorProfile = async (req, res) => {
     }
 }
 
-// API function to update a professor's profile (USE FOR UPDATING OFFICE HOURS LATER)
-import { v2 as cloudinary } from 'cloudinary'
-import fs from 'fs'
 
 const updateProfessorProfile = async (req, res) => {
     try {

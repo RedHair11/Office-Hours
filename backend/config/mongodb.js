@@ -6,7 +6,7 @@ const connectDB = async () => {
     // When the database connection is successful, log a message
     mongoose.connection.on('connected', () => console.log("Database Connected"))
     // Connect to the MongoDB database using the URI from environment variables
-    // "/Booking_Test" is the specific database name being connected to
+    // "/Office_Hours_Test" is the specific database name being connected to
     await mongoose.connect(`${process.env.MONGODB_URI}/Office_Hours`)
 
 }
