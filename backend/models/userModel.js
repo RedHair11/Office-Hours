@@ -1,5 +1,9 @@
 import mongoose from "mongoose"; // Import the Mongoose library to connect and interact with MongoDB
 
+/***********************************************************************
+Primary key are automatically created in MongoDB, they are label as "_id"
+************************************************************************/
+
 // Define the schema for the 'user' collection in the database
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },     // The name of the user (required field)
@@ -18,4 +22,3 @@ const userModel = mongoose.models.user || mongoose.model("user", userSchema);
 // Export the 'userModel' so it can be used in other parts of the application
 export default userModel;
 
-//Primary key are automatically created in MongoDB, they are label as "_id"

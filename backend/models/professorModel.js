@@ -1,7 +1,11 @@
 import mongoose from "mongoose"; // Import the Mongoose library to connect and interact with MongoDB
 
-// Define the schema for the 'professor' collection in the database
+/***********************************************************************
+Primary key are automatically created in MongoDB, they are label as "_id"
+************************************************************************/
 
+
+// Define the schema for the 'professor' collection in the database
 const dailyOfficeHoursSchema = new mongoose.Schema({
     start: {
         type: String, // Store time as a string, e.g., "09:00", "14:30"
@@ -53,5 +57,3 @@ const professorModel = mongoose.models.professor || mongoose.model("professor", 
 
 // Export the 'professorModel' so it can be used in other parts of the application
 export default professorModel;
-
-//Primary key are automatically created in MongoDB, they are label as "_id"

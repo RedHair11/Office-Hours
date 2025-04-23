@@ -1,5 +1,10 @@
 import mongoose from "mongoose" // for working with MongoDB
 
+/******************************************************************************************************************
+ *Primary key are automatically created in MongoDB, they are label as "_id", foreign key are label as "variableId"
+ *mongoose.models from user and professor are used to reference the primary keys to the appointment Schema
+*******************************************************************************************************************/
+
 // Define a schema for the 'appointment' collection in the database
 const appointmentSchema = new mongoose.Schema({
     userId: { type: String, required: true },     // The user ID who booked the appointment (required field)
