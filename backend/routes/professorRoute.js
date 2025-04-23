@@ -1,13 +1,13 @@
-import express from 'express'
+import express from 'express' // for using express.Router()
 import multer from 'multer'
 import { loginProfessor, appointmentsProfessor, appointmentCancel,
          professorList, changeAvailability, appointmentComplete,
-         professorDashboard, professorProfile, updateProfessorProfile } from '../controllers/professorController.js'
-import authProfessor from '../middleware/authProfessor.js'
+         professorDashboard, professorProfile, updateProfessorProfile } from '../controllers/professorController.js' // for importing route handlers
+import authProfessor from '../middleware/authProfessor.js' // for protecting routes from unauthorized access
 
 // Setup multer for temporary image storage
 const upload = multer({ dest: 'uploads/' })
-
+// creating an express router
 const professorRouter = express.Router()
 
 // Route for professor login
