@@ -28,7 +28,6 @@ const professorSchema = new mongoose.Schema({
     slots_booked: { type: Object, default: {} },    // An object storing the booked slots for the professor, keyed by date (defaults to an empty object)
     date: { type: Number, required: true },    // The timestamp when the professor's account was created (required field)
 
-      // --- NEW FIELD: Office Hours ---
       officeHours: {
         type: { // Define the specific structure for M-F
             monday: dailyOfficeHoursSchema,
@@ -47,7 +46,6 @@ const professorSchema = new mongoose.Schema({
             friday:    { start: '10:00', end: '13:00' }  
         })
     }
-    // --- END NEW FIELD ---
 
 }, { minimize: false }) // The 'minimize: false' option keeps empty objects (like slots_booked) in the database as empty objects, instead of removing them.
 
