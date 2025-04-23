@@ -169,13 +169,14 @@ const professorProfile = async (req, res) => {
     }
 }
 
-
+// Function to update a professor's profile
 const updateProfessorProfile = async (req, res) => {
     try {
+        // Destructure data from request body and file
         let { profId, about, available, officeHours } = req.body;
         const imageFile = req.file;
 
-        // Convert types
+        // Parse `officeHours` from string to object if it's a string
         if (typeof available === 'string') {
             available = available === 'true';
         }
@@ -183,10 +184,12 @@ const updateProfessorProfile = async (req, res) => {
             try {
                 officeHours = JSON.parse(officeHours);
             } catch (err) {
+                 // Return error if officeHours is not valid JSON
                 return res.status(400).json({ success: false, message: 'Invalid officeHours format' });
             }
         }
 
+        // Check if professor ID is provided
         if (!profId) {
             return res.status(401).json({ success: false, message: 'Authentication required.' });
         }
@@ -197,22 +200,24 @@ const updateProfessorProfile = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Professor not found.' });
         }
 
-        // Always require an image, whether new or existing
+        // Use existing image or initialize as null
         let finalImageUrl = professor.image || null;
 
+        // If a new image is uploaded, upload to Cloudinary and set new URL
         if (imageFile) {
             const uploadedImage = await cloudinary.uploader.upload(imageFile.path, {
                 resource_type: "image"
             });
             finalImageUrl = uploadedImage.secure_url;
-            fs.unlinkSync(imageFile.path); // remove temp file
+            fs.unlinkSync(imageFile.path); // Delete local temp file after upload
         }
 
+        // If no image is available (new or existing), return error
         if (!finalImageUrl) {
             return res.status(400).json({ success: false, message: 'Profile image is required.' });
         }
 
-        // Update only if data has changed
+        // Prepare the object with fields that need to be updated
         const updateFields = {};
 
         if (about !== professor.about) updateFields.about = about;
@@ -222,27 +227,30 @@ const updateProfessorProfile = async (req, res) => {
         }
         if (finalImageUrl !== professor.image) updateFields.image = finalImageUrl;
 
-        // If nothing changed, just return success
+        // If no changes are detected, return a success response without updating
         if (Object.keys(updateFields).length === 0) {
             return res.json({ success: true, message: 'No changes made.', profileData: professor });
         }
 
-        // Apply update
+        // Update the professor record with new data and return the updated record
         const updatedProfessor = await professorModel.findByIdAndUpdate(
             profId,
             { $set: updateFields },
             { new: true, runValidators: true }
-        ).select('-password');
+        ).select('-password'); // Exclude password field from returned data
 
+        // Respond with the updated profile data
         res.json({ success: true, message: 'Profile Updated Successfully', profileData: updatedProfessor });
 
     } catch (error) {
         console.error("Error updating professor profile:", error);
 
+        // Handle validation errors specifically
         if (error.name === 'ValidationError') {
             return res.status(400).json({ success: false, message: 'Validation failed.', errors: error.errors });
         }
 
+        // Catch-all for other server errors
         res.status(500).json({ success: false, message: "Server error updating profile." });
     }
 };
