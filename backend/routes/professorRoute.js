@@ -1,6 +1,6 @@
 import express from 'express'; // for using express.Router()
 import { loginProfessor, appointmentsProfessor, appointmentCancel, 
-         professorList, changeAvailablity, appointmentComplete, 
+         professorList, changeAvailability, appointmentComplete, 
          professorDashboard, professorProfile, updateProfessorProfile } from '../controllers/professorController.js'; // for importing route handlers
 import authProfessor from '../middleware/authProfessor.js'; // for protecting routes from unauthorized access
 
@@ -16,7 +16,7 @@ professorRouter.get("/appointments", authProfessor, appointmentsProfessor)
 // Route for fetching all professors (no authentication required)
 professorRouter.get("/list", professorList)
 // Route for changing professor's availability (professor only)
-professorRouter.post("/change-availability", authProfessor, changeAvailablity)
+professorRouter.post("/change-availability", authProfessor, changeAvailability)
 // Route for marking an appointment as complete (professor only)
 professorRouter.post("/complete-appointment", authProfessor, appointmentComplete)
 // Route for fetching professor's dashboard (professor only)

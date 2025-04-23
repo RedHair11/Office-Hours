@@ -59,16 +59,27 @@ const ProfessorProfile = () => {
         if (dToken) getProfileData()
     }, [dToken])
 
-    const formatDayName = (day) => day.charAt(0).toUpperCase() + day.slice(1)
+    const formatDayName = (day) =>{
+        return day.charAt(0).toUpperCase() + day.slice(1);
+        };
 
-    const formatTimeTo12Hour = (time24) => {
-        if (!time24 || !time24.includes(':')) return time24
-        const [h, m] = time24.split(':')
-        let hr = parseInt(h)
-        const ampm = hr >= 12 ? 'PM' : 'AM'
-        hr = hr % 12 || 12
-        return `${hr}:${m} ${ampm}`
+   // Helper function to convert "HH:MM" (24-hour) to "h:mm AM/PM" (12-hour)
+   const formatTimeTo12Hour = (time24) => {
+    if (!time24 || !time24.includes(':')) {
+        return time24; // Return original string if format is unexpected or null/empty
     }
+    const [hours24, minutes] = time24.split(':');
+    let hours = parseInt(hours24, 10);
+    if (isNaN(hours) || isNaN(parseInt(minutes, 10))) {
+         return time24; // Return original if parsing fails
+    }
+
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Handle midnight (0 becomes 12)
+
+    return `${hours}:${minutes} ${ampm}`;
+    };
 
     const currentOfficeHours = profileData?.officeHours || {}
 
@@ -129,53 +140,54 @@ const ProfessorProfile = () => {
                         Email: <span className='text-blue-500'>{profileData.email}</span>
                     </p>
 
-                    {/* Office Hours */}
-                    <div className='mt-5'>
+                    {/* --- Office Hours Section --- */}
+                    <div className='mt-5'> {/* Increased margin */}
                         <p className='text-sm font-semibold text-gray-700 mb-2'>Office Hours:</p>
                         <div className='space-y-2'>
-                            {daysOfWeek.map(day => {
-                                const hours = currentOfficeHours[day] || {}
-                                const startVal = hours.start || ''
-                                const endVal = hours.end || ''
-                                const dispStart = hours.start ? formatTimeTo12Hour(hours.start) : null
-                                const dispEnd = hours.end ? formatTimeTo12Hour(hours.end) : null
+                            {daysOfWeek.map((day) => {
+                                // Use the safer currentOfficeHours variable
+                                const hours = currentOfficeHours[day];
+                                // Values for input fields (need 24hr format "HH:MM" or empty string)
+                                const startValue = hours?.start || '';
+                                const endValue = hours?.end || '';
+                                // Values for display (need 12hr format or "Not set")
+                                const displayStart = hours?.start ? formatTimeTo12Hour(hours.start) : null;
+                                const displayEnd = hours?.end ? formatTimeTo12Hour(hours.end) : null;
 
                                 return (
                                     <div key={day} className="flex flex-col sm:flex-row sm:items-center sm:gap-4">
                                         <span className='w-24 font-medium text-gray-700 text-sm'>{formatDayName(day)}:</span>
-                                        {
-                                            isEdit
-                                                ? (
-                                                    <div className='flex items-center gap-2 mt-1 sm:mt-0'>
-                                                        <input
-                                                            type="time"
-                                                            className="border border-gray-300 rounded px-2 py-1 text-sm w-28"
-                                                            value={startVal}
-                                                            onChange={(e) => handleOfficeHoursChange(day, 'start', e.target.value)}
-                                                        />
-                                                        <span className="text-gray-500">-</span>
-                                                        <input
-                                                            type="time"
-                                                            className="border border-gray-300 rounded px-2 py-1 text-sm w-28"
-                                                            value={endVal}
-                                                            onChange={(e) => handleOfficeHoursChange(day, 'end', e.target.value)}
-                                                        />
-                                                    </div>
-                                                )
-                                                : (
-                                                    <span className='text-sm text-gray-600 mt-1 sm:mt-0'>
-                                                        {dispStart && dispEnd
-                                                            ? `${dispStart} - ${dispEnd}`
-                                                            : <span className="text-gray-400 italic">Not set</span>
-                                                        }
-                                                    </span>
-                                                )
-                                        }
+                                        {isEdit ? (
+                                            <div className='flex items-center gap-2 mt-1 sm:mt-0'>
+                                                <input
+                                                    type="time" // Input still expects "HH:MM"
+                                                    className="border border-gray-300 rounded px-2 py-1 text-sm w-28 focus:ring-primary focus:border-primary"
+                                                    value={startValue} // Use 24hr value for input
+                                                    onChange={(e) => handleOfficeHoursChange(day, 'start', e.target.value)}
+                                                />
+                                                <span className="text-gray-500">-</span>
+                                                <input
+                                                    type="time" // Input still expects "HH:MM"
+                                                    className="border border-gray-300 rounded px-2 py-1 text-sm w-28 focus:ring-primary focus:border-primary"
+                                                    value={endValue} // Use 24hr value for input
+                                                    onChange={(e) => handleOfficeHoursChange(day, 'end', e.target.value)}
+                                                />
+                                            </div>
+                                        ) : (
+                                            // *** UPDATED DISPLAY LOGIC ***
+                                            <span className='text-sm text-gray-600 mt-1 sm:mt-0'>
+                                                {displayStart && displayEnd
+                                                    ? `${displayStart} - ${displayEnd}` // Use formatted 12hr times
+                                                    : <span className="text-gray-400 italic">Not set</span>
+                                                }
+                                            </span>
+                                        )}
                                     </div>
-                                )
+                                );
                             })}
                         </div>
                     </div>
+                    {/* --- End Office Hours Section --- */}
 
                     {/* About */}
                     <div>
@@ -197,8 +209,7 @@ const ProfessorProfile = () => {
                         <input
                             type="checkbox"
                             onChange={() => isEdit && setProfileData(prev => ({ ...prev, available: !prev.available }))}
-                            checked={profileData.available}
-                        />
+                            checked={profileData.available}/>
                         <label>Available</label>
                     </div>
 

@@ -1,7 +1,7 @@
 import express from 'express'; // for using express.Router()
 import { loginAdmin, appointmentsAdmin, appointmentCancel, 
          addProfessor, allProfessors, adminDashboard } from '../controllers/adminController.js'; // for importing route handlers
-import { changeAvailablity } from '../controllers/professorController.js'; // for importing route handlers
+import { changeAvailability } from '../controllers/professorController.js'; // for importing route handlers
 import authAdmin from '../middleware/authAdmin.js'; // for protecting routes from unauthorized access
 import upload from '../middleware/multer.js'; // for handling file uploads
 
@@ -19,7 +19,7 @@ adminRouter.post("/cancel-appointment", authAdmin, appointmentCancel)
 // Route for fetching all professors (admin only)
 adminRouter.get("/all-professors", authAdmin, allProfessors)
 // Route for changing professor availability (admin only)
-adminRouter.post("/change-availability", authAdmin, changeAvailablity)
+adminRouter.post("/change-availability", authAdmin, changeAvailability)
 // Route for viewing the admin dashboard (admin only)
 adminRouter.get("/dashboard", authAdmin, adminDashboard)
 

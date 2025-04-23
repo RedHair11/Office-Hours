@@ -293,7 +293,7 @@ export {
     appointmentsProfessor,
     appointmentCancel,
     professorList,
-    changeAvailablity,
+    changeAvailability,
     appointmentComplete,
     professorDashboard,
     professorProfile,
