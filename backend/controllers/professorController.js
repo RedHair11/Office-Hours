@@ -140,7 +140,7 @@ const changeAvailability = async (req, res) => {
         // Toggle the professor's availability status (change from true to false or vice versa)
          // Return a success response indicating that the availability has been changed
         await professorModel.findByIdAndUpdate(profId, { available: !profData.available })
-        res.json({ success: true, message: 'Availability Changed' })
+        res.json({ success: true, message: 'Availablity Changed' })
 
     } catch (error) {
         // If an error occurs during the process, log the error for debugging
@@ -220,7 +220,9 @@ const updateProfessorProfile = async (req, res) => {
 
         if (about !== professor.about) updateFields.about = about;
         if (available !== professor.available) updateFields.available = available;
+        if (JSON.stringify(officeHours) !== JSON.stringify(professor.officeHours)) {
             updateFields.officeHours = officeHours;
+        }
         if (finalImageUrl !== professor.image) updateFields.image = finalImageUrl;
 
         // If nothing changed, just return success

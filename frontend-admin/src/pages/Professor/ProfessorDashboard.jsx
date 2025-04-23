@@ -68,7 +68,8 @@ const ProfessorDashboard = () => {
               <img className='rounded-full w-10' src={item.userData.image} alt="" />
               <div className='flex-1 text-sm'>
                 <p className='text-gray-800 font-medium'>{item.userData.name}</p>
-                <p className='text-gray-600 '>Booking on {slotDateFormat(item.slotDate)}</p>
+                <p className='text-gray-600'> Meeting at {slotDateFormat(item.slotDate)}, {item.slotTime}</p>
+
               </div>
 
              {/* If the appointment is cancelled, a red "Cancelled" label is shown. 
