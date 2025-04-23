@@ -19,7 +19,7 @@ professorRouter.post("/complete-appointment", authProfessor, appointmentComplete
 professorRouter.get("/dashboard", authProfessor, professorDashboard)
 professorRouter.get("/profile", authProfessor, professorProfile)
 
-// ✅ UPDATED: Allow image upload for professor profile update
+// UPDATED: Allow image upload for professor profile update
 professorRouter.post("/update-profile", authProfessor, upload.single('image'), updateProfessorProfile)
 
 export default professorRouter
