@@ -26,7 +26,7 @@ const Banner = () => {
 
             {/* ------- Right Side (Image) ------- */}
             {/* This section is hidden on smaller screens and only appears on medium devices and above */}
-            <div className='hidden md:block md:w-1/2 lg:w-[450px] relative flex justify-center items-center  py-9'>
+            <div className='bg-slate-200 hidden md:block md:w-1/2 lg:w-[450px] relative flex justify-center items-center  py-9'>
                 <img className='rounded-md' src={assets.student_group} alt="" style={{ transform: 'scale(1.1)' }}/>
             </div>
         </div>
