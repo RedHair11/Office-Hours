@@ -27,8 +27,9 @@ const Navbar = () => {
     <div className='h-[100px] bg-primary flex items-center justify-between text-sm py-4 mb-5 border-b border-b-[#ADADAD]'>
 
       {/* TAMIU Logo*/}
-      <img className='scale-[.50] w-44' src={assets.TAMIU_logo} alt="" />
-
+      <NavLink to='/'>
+       <img className='scale-[.50] w-44' src={assets.TAMIU_logo} alt="" />
+      </NavLink>
       {/* Navigation links - visible on medium screens and above */}
       <ul className='md:flex items-start gap-10 font-medium hidden'>
 
