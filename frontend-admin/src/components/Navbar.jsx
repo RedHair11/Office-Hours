@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { assets } from '../assets/assets' // Import assets like images
 import { ProfessorContext } from '../context/ProfessorContext' // Import Professor context for token management
 import { AdminContext } from '../context/AdminContext' // Import Admin context for token management
-import { useNavigate } from 'react-router-dom'  // Import useNavigate to handle page navigation
+import { NavLink, useNavigate } from 'react-router-dom'  // Import useNavigate to handle page navigation
 
 
 const Navbar = () => {
@@ -33,7 +33,9 @@ const Navbar = () => {
       {/* Left side of the Navbar */}
       <div className='flex items-center gap-2 text-xs'>
          {/* TAMIU logo - navigates to the home page when clicked */}
+         <NavLink to='/'>
         <img className='w-36 sm:w-40 scale-[.50]' src={assets.TAMIU_logo} alt="" />
+        </NavLink>
         {/* Display whether the user is Admin or Professor based on the token */}
         <p className='bg-secondary border px-2.5 py-0.5 rounded-full border-gray-500 text-white'>{aToken ? 'Admin' : 'Professor'}</p>
       </div>

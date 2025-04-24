@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { ProfessorContext } from './context/ProfessorContext';
 import { AdminContext } from './context/AdminContext';
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './components/Navbar'
@@ -20,7 +20,17 @@ const App = () => {
   // Context hooks to get the professor and admin authentication tokens
   const { dToken } = useContext(ProfessorContext)
   const { aToken } = useContext(AdminContext)
+  const location = useLocation()
   console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
+
+  if (aToken && location.pathname === '/') {
+    return <Navigate to="/admin-dashboard" replace />
+  }
+
+  if (dToken && location.pathname === '/') {
+    return <Navigate to="/professor-dashboard" replace />
+  }
+
 
   // If either a professor or admin is logged in
   return dToken || aToken ? (
@@ -38,7 +48,7 @@ const App = () => {
 
         {/* Define routes for different pages in the application */}
         <Routes>
-          <Route path='/' element={<></>} />
+          <Route path='/' element={<Dashboard/>} />
 
           {/* Admin routes */}
           <Route path='/admin-dashboard' element={<Dashboard />} />
