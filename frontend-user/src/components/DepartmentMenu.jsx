@@ -20,16 +20,19 @@ const DepartmentMenu = () => {
 
                     // Each department is a link that navigates to the corresponding professor list page
                     // scrollTo(0, 0) ensures the page scrolls to the top after navigation
+                    <div className='lg:w-15'>  
                     <Link to={`/professors/${item.department}`} onClick={() => scrollTo(0, 0)} className='flex flex-col items-center 
                     text-xs cursor-pointer flex-shrink-0 hover:translate-y-[-10px] transition-all duration-500' key={index}>
                         {/* Department image */}
-                        <div className='bg-primary rounded-full p-2'>
-                        <img className='w-16 sm:w-24 p-3 ' src={item.image} alt="" />
-                        </div>
+                            <div className='bg-primary rounded-full p-2 hover:bg-secondary'>
+                            
+                                <img className='w-16 md:w-24 p-3' src={item.image} alt="" />
+                            </div>
                         
                          {/* Department name */}
-                        <p className='text-base font-semibold'>{item.department}</p>
+                        <p className='text-base font-semibold md:font-normal lg:font-bold sm:font-normal'>{item.department}</p>
                     </Link>
+                    </div>
                 ))}
             </div>
         </div>
