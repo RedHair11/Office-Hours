@@ -18,28 +18,28 @@ const Sidebar = () => {
       {aToken && <ul className='text-white mt-5'>
         
         {/* Admin Dashboard link */}
-        <NavLink to={'/admin-dashboard'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72
+        <NavLink to={'/admin-dashboard'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-60
          cursor-pointer ${isActive ? 'bg-primary border-r-4 border-primary' : 'hover:bg-[#151515]'}`}>
           <img className='min-w-5 invert' src={assets.home_icon} alt='' />
           <p className='hidden md:block'>Dashboard</p>
         </NavLink>
 
         {/* Admin - View All Booked Meetings */}
-        <NavLink to={'/all-appointments'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 
+        <NavLink to={'/all-appointments'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-60 
         cursor-pointer ${isActive ? 'bg-primary border-r-4 border-primary' : 'hover:bg-[#151515] '}`}>
           <img className='min-w-5 invert' src={assets.appointment_icon} alt='' />
           <p className='hidden md:block'>Booked Meetings</p>
         </NavLink>
 
         {/* Admin - Add a New Professor */}
-        <NavLink to={'/add-professor'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 
+        <NavLink to={'/add-professor'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-60 
         cursor-pointer ${isActive ? 'bg-primary border-r-4 border-primary' : 'hover:bg-[#151515]'}`}>
           <img className='min-w-5 invert' src={assets.add_icon} alt='' />
           <p className='hidden md:block'>Add Professor</p>
         </NavLink>
 
         {/* Admin - View Professor List */}
-        <NavLink to={'/professor-list'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 
+        <NavLink to={'/professor-list'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-60 
         cursor-pointer ${isActive ? 'bg-primary border-r-4 border-primary' : 'hover:bg-[#151515] '}`}>
           <img className='min-w-5 invert' src={assets.people_icon} alt='' />
           <p className='hidden md:block'>Professor List</p>
@@ -50,21 +50,21 @@ const Sidebar = () => {
       {dToken && <ul className='text-white mt-5'>
 
         {/* Professor Dashboard link */}
-        <NavLink to={'/professor-dashboard'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 
+        <NavLink to={'/professor-dashboard'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-60 
         cursor-pointer ${isActive ? 'bg-primary border-r-4 border-primary' : 'hover:bg-[#151515] '}`}>
           <img className='min-w-5 invert' src={assets.home_icon} alt='' />
           <p className='hidden md:block'>Dashboard</p>
         </NavLink>
 
         {/* Professor - View Booked Meetings */}
-        <NavLink to={'/professor-appointments'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 
+        <NavLink to={'/professor-appointments'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-60 
         cursor-pointer ${isActive ? 'bg-primary border-r-4 border-primary' : 'hover:bg-[#151515] '}`}>
           <img className='min-w-5 invert' src={assets.appointment_icon} alt='' />
           <p className='hidden md:block'>Booked Meetings</p>
         </NavLink>
 
         {/* Professor - Profile link */}
-        <NavLink to={'/professor-profile'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-72 
+        <NavLink to={'/professor-profile'} className={({ isActive }) => `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-60 
         cursor-pointer ${isActive ? 'bg-primary border-r-4 border-primary' : 'hover:bg-[#151515] '}`}>
           <img className='min-w-5 invert' src={assets.people_icon} alt='' />
           <p className='hidden md:block'>Profile</p>
