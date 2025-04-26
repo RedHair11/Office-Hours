@@ -1,0 +1,150 @@
+/* Basic Calendar Styling*/
+.react-calendar {
+    width: 100%; 
+    max-width: 800px; 
+    background: white;
+    border: 1px solid #a0a096;
+    border-radius: 8px;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.125em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem; /* Add some space below the calendar */
+  }
+
+  .react-calendar__navigation {
+    background-color: #61162d; 
+    padding: 5px 0; 
+    border-top-left-radius: 8px; 
+    border-top-right-radius: 8px;
+  }  
+  
+.react-calendar__navigation button {
+    color: white; 
+    background: none; 
+  }
+  .react-calendar__navigation button:enabled:hover,
+  .react-calendar__navigation button:enabled:focus {
+    background-color: rgba(255, 255, 255, 0.2); 
+  }
+  
+  .react-calendar__navigation button:disabled {
+    color: #a0a096; 
+    background-color: transparent;
+  }
+  
+  
+  .react-calendar__navigation__label__labelText {
+     color: white; 
+  }
+  
+  .react-calendar__month-view__weekdays__weekday {
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 0.75em;
+      padding: 0.5em;
+      color: #666;
+  }
+  
+  .react-calendar__tile {
+    max-width: 100%;
+    padding: 15px 8px;
+    background: none;
+    text-align: center;
+    line-height: 30px;
+    font-size: 0.9em;
+    border-radius: 4px; 
+  }
+
+  .react-calendar__navigation__label__labelText {
+  color: white; 
+  font-weight: bold; 
+}
+
+/* You might also want to ensure the button wrapping it doesn't override the color */
+.react-calendar__navigation__label {
+   color: inherit; /* Inherit color from the labelText */
+}
+  
+  .react-calendar__tile:disabled {
+    background-color: #f0f0f0;
+    color: #ababab;
+    cursor: not-allowed;
+  }
+  
+  .react-calendar__tile:enabled:hover,
+  .react-calendar__tile:enabled:focus {
+    background-color: #e6e6e6;
+  }
+  
+  /* Highlight today's date */
+  .react-calendar__tile--now {
+    background: #b5a36a;
+    font-weight: bold;
+    color: white;
+  }
+  .react-calendar__tile--now:enabled:hover,
+  .react-calendar__tile--now:enabled:focus {
+      background: #b5a36a;
+
+  }
+  
+  /* Style for the dot on today's date when it has slots */
+.react-calendar__tile--now.react-calendar__tile--hasSlots::after {
+    background-color: white; /* White dot on yellowish 'today' background */
+  }
+  
+  /* Style for the selected date */
+  .react-calendar__tile--active {
+    background: #61162d; 
+    color: white;
+    font-weight: bold;
+  }
+  .react-calendar__tile--active:enabled:hover,
+  .react-calendar__tile--active:enabled:focus {
+    background: #61162d;
+  }
+  
+  /* Custom class for dates with available slots */
+  .react-calendar__tile--hasSlots {
+     position: relative;
+  }
+  
+  .react-calendar__tile--hasSlots::after {
+      content: '';
+      position: absolute;
+      bottom: 5px; /* Position the dot */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px; /* Size of the dot */
+      height: 5px;
+      background-color: #4CAF50; /* Color of the dot (green) */
+      border-radius: 50%;
+  }
+  
+  /* Ensure the dot color changes for selected date */
+  .react-calendar__tile--active.react-calendar__tile--hasSlots::after {
+      background-color: white; 
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+      .react-calendar {
+          max-width: 100%;
+      }
+      /* Adjust time slot width for smaller screens if needed */
+      .time-slot-item { /* Add this class to the time slot div */
+          width: calc(50% - 0.75rem); /* Two columns on small screens */
+      }
+  }
+  
+  @media (min-width: 641px) {
+       .time-slot-item { /* Add this class to the time slot div */
+          width: calc(33.33% - 0.75rem); /* Three columns on medium */
+      }
+  }
+  @media (min-width: 1024px) {
+       .time-slot-item { /* Add this class to the time slot div */
+          width: calc(25% - 0.75rem); /* Four columns on large */
+      }
+  }

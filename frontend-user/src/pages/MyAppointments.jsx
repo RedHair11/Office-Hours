@@ -19,9 +19,34 @@ const MyAppointments = () => {
 
     // Function to format date from "DD_MM_YYYY" to "DD Mon YYYY"
     const slotDateFormat = (slotDate) => {
-        const dateArray = slotDate.split('_') // Split the date string
-        return dateArray[0] + " " + months[Number(dateArray[1])] + " " + dateArray[2] // Format the date
+        if (!slotDate || typeof slotDate !== 'string') { // Add basic check
+            return 'Invalid Date';
+        }
+        const dateArray = slotDate.split('_'); // Split the date string
+        if (dateArray.length !== 3) { // Ensure correct format
+            return 'Invalid Date Format';
+        }
+        // Convert the 1-based month (MM) to a 0-based index for the array
+        const monthIndex = Number(dateArray[1]) - 1;
+
+        // Check if the calculated index is valid for the months array
+        if (monthIndex >= 0 && monthIndex < months.length) {
+            return dateArray[0] + " " + months[monthIndex] + " " + dateArray[2]; // Format the date
+        } else {
+            console.error("Invalid month index calculated:", monthIndex, "from slotDate:", slotDate);
+            return 'Invalid Month'; // Indicate error
+        }
     }
+    // Add this function inside or outside the MyAppointments component definition
+    const formatTimeTo12Hour = (time24) => {
+        if (!time24 || !time24.includes(':')) return time24; // Handle potential null/invalid format
+        const [hours24, minutes] = time24.split(':');
+        let hours = parseInt(hours24, 10);
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        return `${hours}:${minutes} ${ampm}`;
+    };
 
     // Function to fetch the user's booked appointments from the backend
     const getUserAppointments = async () => {
@@ -85,8 +110,11 @@ const MyAppointments = () => {
                         <div className='flex-1 text-sm text-[#5E5E5E]'>
                             <p className='text-[#262626] text-base font-semibold'>{item.profData.name}</p>
                             <p>Department: {item.profData.department}</p>
-                            <p className=' mt-1'><span className='text-sm text-[#3C3C3C] font-medium'>Date & Time:</span> 
-                            {slotDateFormat(item.slotDate)} |  {item.slotTime}</p>
+                            <p className=' mt-1'><span className='text-sm text-[#3C3C3C] font-medium'>Date & Time:</span>
+                            {slotDateFormat(item.slotDate)} | {formatTimeTo12Hour(item.slotTime)} {/* <-- Apply the function here */}
+                            </p>
+
+    
                         </div>
                         <div></div>
 
