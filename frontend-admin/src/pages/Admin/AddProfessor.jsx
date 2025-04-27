@@ -29,15 +29,13 @@ const AddProfessor = () => {
         event.preventDefault() // Prevents the default form submission behavior
 
         try {
-            // if no image is selected, show error message
-            if (!profImg) {
-                return toast.error('Image Not Selected')
-            }
-
             // Prepare form data including image and text fields
             const formData = new FormData();
 
-            formData.append('image', profImg)
+            // Conditionally append image only if selected
+            if (profImg) {
+                formData.append('image', profImg);
+            }
             formData.append('name', name)
             formData.append('email', email)
             formData.append('password', password)

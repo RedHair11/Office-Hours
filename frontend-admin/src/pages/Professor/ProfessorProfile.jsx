@@ -13,6 +13,24 @@ const ProfessorProfile = () => {
 
     const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
 
+    // --- Helper function to determine the correct image source ---
+    const getImageUrl = (imgData) => {
+        if (!imgData) {
+            // Handle cases where image might be explicitly null or undefined
+            return ''; // Or return a placeholder path if you have one
+        }
+        if (imgData.startsWith('http')) {
+            // It's a Cloudinary URL
+            return imgData;
+        } else if (imgData.startsWith('data:image')) {
+            // It's the default Data URI
+            return imgData;
+        } else {
+            // Fallback for potential older relative paths
+            return `<span class="math-inline">\{backendUrl\}/</span>{imgData}`;
+        }
+    };
+
     const updateProfile = async () => {
         try {
             const formData = new FormData()
@@ -82,50 +100,42 @@ const ProfessorProfile = () => {
     };
 
     const currentOfficeHours = profileData?.officeHours || {}
+     // Use the helper function to get the image source for display
+     const displayImageUrl = profileData ? getImageUrl(profileData.image) : '';
 
     return profileData && (
         <div>
             <div className='flex flex-col gap-4 m-5'>
 
-                {/* Editable Profile Picture */}
+                {/* Image Display/Upload Section */}
                 <div>
-                    {
-                        isEdit ? (
-                            <label htmlFor="image">
-                                <div className="inline-block relative cursor-pointer hover:opacity-90 border border-gray-300 rounded-md">
+                    {isEdit ? (
+                        <label htmlFor="image">
+                            <div className="inline-block relative cursor-pointer hover:opacity-90 border border-gray-300 rounded-md">
+                                <img
+                                    className='bg-primary/80 w-full sm:max-w-64 rounded-lg opacity-75'
+                                    // Use helper for existing image, or preview new one
+                                    src={image ? URL.createObjectURL(image) : displayImageUrl}
+                                    alt="Profile"
+                                />
+                                {!image && (
                                     <img
-                                        className='bg-primary/80 w-full sm:max-w-64 rounded-lg opacity-75'
-                                        src={
-                                            image
-                                                ? URL.createObjectURL(image)
-                                                : (profileData.image?.startsWith('http')
-                                                    ? profileData.image
-                                                    : `${backendUrl}/${profileData.image}`)
-                                        }
-                                        alt="Profile"
+                                        className='w-10 absolute bottom-10 right-10'
+                                        src={assets.upload_icon}
+                                        alt="Upload icon"
                                     />
-                                    {!image && (
-                                        <img
-                                            className='w-10 absolute bottom-10 right-10'
-                                            src={assets.upload_icon}
-                                            alt="Upload icon"
-                                        />
-                                    )}
-                                </div>
-                                <input type="file" id="image" hidden onChange={(e) => setImage(e.target.files[0])} />
-                            </label>
-                        ) : (
-                            <img
-                                className='bg-primary/80 w-full sm:max-w-64 rounded-lg'
-                                src={
-                                    profileData.image?.startsWith('http')
-                                        ? profileData.image
-                                        : `${backendUrl}/${profileData.image}`
-                                }
-                                alt="Profile"
-                            />
-                        )
-                    }
+                                )}
+                            </div>
+                            <input type="file" id="image" hidden onChange={(e) => setImage(e.target.files[0])} />
+                        </label>
+                    ) : (
+                        <img
+                            className='bg-primary/80 w-full sm:max-w-64 rounded-lg'
+                            // Use helper function here too
+                            src={displayImageUrl}
+                            alt="Profile"
+                        />
+                    )}
                 </div>
 
                 <div className='flex-1 border border-stone-100 rounded-lg p-8 py-7 bg-white'>

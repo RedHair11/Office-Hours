@@ -7,7 +7,7 @@ const Dashboard = () => {
 
   // Accessing states and functions from context
   const { aToken, getDashData, cancelAppointment, dashData } = useContext(AdminContext)
-  const { slotDateFormat } = useContext(AppContext)
+  const { slotDateFormat, formatTimeTo12Hour } = useContext(AppContext)
   
   // Fetch dashboard data when token is available
   useEffect(() => {
@@ -80,7 +80,7 @@ const Dashboard = () => {
 
               <div className='flex-1 text-sm'>
                 <p className='text-gray-800 font-medium'>{item.profData.name}</p>
-                <p className='text-gray-600 '>Booking on {slotDateFormat(item.slotDate)}</p>
+                <p className='text-gray-600 '>Booking on {slotDateFormat(item.slotDate)}, {formatTimeTo12Hour(item.slotTime)}</p>
               </div>
               {item.cancelled ? <p className='text-red-400 text-xs font-medium font-bold'>Cancelled</p> : item.isCompleted ? 
               <p className='text-green-500 text-xs font-medium font-bold'>Completed</p> : 

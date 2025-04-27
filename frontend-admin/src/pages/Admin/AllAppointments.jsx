@@ -8,7 +8,7 @@ const AllAppointments = () => {
 
   // Pulling necessary states and functions from context
   const { aToken, appointments, cancelAppointment, getAllAppointments } = useContext(AdminContext)
-  const { slotDateFormat } = useContext(AppContext)
+  const { slotDateFormat, formatTimeTo12Hour } = useContext(AppContext)
 
   /**
    * useEffect to fetch all appointments when the component mounts
@@ -54,7 +54,7 @@ const AllAppointments = () => {
              <p className='max-sm:hidden'>{item.userData?.studentID || 'N/A'}</p> 
 
             {/* Date and Time of Appointment */}
-            <p>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
+            <p>{slotDateFormat(item.slotDate)}, {formatTimeTo12Hour(item.slotTime)}</p>
 
             {/* Professor Info */}
             <div className='flex items-center gap-2'>
