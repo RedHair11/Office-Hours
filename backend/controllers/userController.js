@@ -273,7 +273,7 @@ const bookAppointment = async (req, res) => {
         const appointmentDateTimeUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
 
         // Calculate the reminder time (30 minutes before the appointment)
-        const reminderTime = new Date(appointmentDateTimeUTC.getTime() - 10 * 60 * 1000); // Subtract 30 minutes
+        const reminderTime = new Date(appointmentDateTimeUTC.getTime() - 58 * 60 * 1000); // Subtract 30 minutes
 
         console.log("Original Appointment Slot:", `${slotDate} ${slotTime}`);
         console.log("Appointment DateTime (UTC):", appointmentDateTimeUTC.toISOString()); // Log as ISO string (UTC)
