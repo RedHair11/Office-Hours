@@ -252,8 +252,7 @@ const Appointment = () => {
             if (data.success) {
                 toast.success(data.message || 'Appointment booked successfully!');
                 await getProfessorsData(); // Refresh context data
-                // Navigate AFTER data refresh is likely complete, or handle state update locally
-                navigate('/my-appointments');
+                
             } else {
                 // Backend indicated failure (e.g., slot taken just now)
                 toast.error(data.message || 'Failed to book appointment. The slot might have been taken.');
