@@ -9,7 +9,7 @@ const ProfessorDashboard = () => {
   
   // Destructuring required values and functions from the context
   const { dToken, dashData, getDashData, cancelAppointment, completeAppointment } = useContext(ProfessorContext)
-  const { slotDateFormat } = useContext(AppContext)
+  const { slotDateFormat, formatTimeTo12Hour } = useContext(AppContext)
 
   // Fetch dashboard data if professor token is present
   useEffect(() => {
@@ -68,7 +68,7 @@ const ProfessorDashboard = () => {
               <img className='rounded-full w-10' src={item.userData.image} alt="" />
               <div className='flex-1 text-sm'>
                 <p className='text-gray-800 font-medium'>{item.userData.name}</p>
-                <p className='text-gray-600'> Meeting at {slotDateFormat(item.slotDate)}, {item.slotTime}</p>
+                <p className='text-gray-600'> Meeting at {slotDateFormat(item.slotDate)}, {formatTimeTo12Hour(item.slotTime)}</p>
 
               </div>
 

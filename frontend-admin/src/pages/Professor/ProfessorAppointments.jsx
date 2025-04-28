@@ -8,7 +8,7 @@ import './calendar.css'
 
 const ProfessorAppointments = () => {
   const { dToken, appointments, getAppointments, cancelAppointment, completeAppointment } = useContext(ProfessorContext)
-  const { slotDateFormat } = useContext(AppContext)
+  const { slotDateFormat, formatTimeTo12Hour } = useContext(AppContext)
 
   const [selectedDate, setSelectedDate] = useState(null)
 
@@ -87,7 +87,7 @@ const ProfessorAppointments = () => {
                 <p>{item.userData.name}</p>
               </div>
               <p>{item.userData?.studentID || 'N/A'}</p>
-              <p>{slotDateFormat(item.slotDate)}, {item.slotTime}</p>
+              <p>{slotDateFormat(item.slotDate)}, {formatTimeTo12Hour(item.slotTime)}</p>
               {item.cancelled ? (
                 <p className='text-red-400 text-xs font-medium font-bold'>Cancelled</p>
               ) : item.isCompleted ? (

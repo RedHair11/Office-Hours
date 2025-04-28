@@ -99,16 +99,26 @@ const addProfessor = async (req, res) => {
         // This ensures that the password is stored securely in the database
         const hashedPassword = await bcrypt.hash(password, salt)
 
-        // Upload the professor's image to Cloudinary (cloud-based image storage)
-        // The uploaded image will return a secure URL that will be stored in the database
-        const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" })
-        const imageUrl = imageUpload.secure_url
+        let imageUrl = null; // Initialize imageUrl
+
+        // Only upload if an image file is provided
+        if (imageFile) {
+            try {
+                const imageUpload = await cloudinary.uploader.upload(imageFile.path, { resource_type: "image" });
+                imageUrl = imageUpload.secure_url;
+            } catch (uploadError) {
+                console.error("Cloudinary Upload Error:", uploadError);
+                 return res.json({ success: false, message: "Image upload failed." });
+            }
+        }
+        // If imageUrl is still null here, the default from the schema will be used upon saving.
 
         // Create a professor object with all the necessary data to store in the database
         const professorData = {
             name,                       // Professor's name
             email,                      // Professor's email
-            image: imageUrl,            // URL of the professor's image
+            // Only include image if it was successfully uploaded
+            ...(imageUrl && { image: imageUrl }), // Conditionally add image property
             password: hashedPassword,   // Hashed password for security
             department,                 // Department the professor belongs to
             about,                      // Additional info or description about the professor
