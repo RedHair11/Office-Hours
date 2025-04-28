@@ -270,14 +270,15 @@ const bookAppointment = async (req, res) => {
 
         // Create a Date object for the appointment time
         // Note: Month is 0-indexed in JavaScript Date objects (0 for January, 11 for December)
-        const appointmentDateTime = new Date(year, month - 1, day, hours, minutes, 0);
+        const appointmentDateTimeUTC = new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
 
         // Calculate the reminder time (30 minutes before the appointment)
-        const reminderTime = new Date(appointmentDateTime.getTime() - 15 * 60 * 1000); // Subtract 30 minutes
+        const reminderTime = new Date(appointmentDateTimeUTC.getTime() - 15 * 60 * 1000); // Subtract 30 minutes
 
-        console.log("Appointment DateTime:", appointmentDateTime);
-        console.log("Calculated Reminder Time:", reminderTime);
-        console.log("Current Time:", new Date());
+        console.log("Original Appointment Slot:", `${slotDate} ${slotTime}`);
+        console.log("Appointment DateTime (UTC):", appointmentDateTimeUTC.toISOString()); // Log as ISO string (UTC)
+        console.log("Calculated Reminder Time (UTC):", reminderTime.toISOString()); // Log as ISO string (UTC)
+        console.log("Current Time (UTC):", new Date().toISOString());
         console.log("Is Reminder Time > Current Time?", reminderTime > new Date());
 
         // Schedule the reminder email using node-schedule
@@ -299,7 +300,7 @@ const bookAppointment = async (req, res) => {
                     }
                 });
             });
-             console.log(`Reminder scheduled for appointment on ${slotDate} at ${slotTime}`);
+            console.log(`Reminder scheduled for: ${reminderTime.toISOString()} (Appointment: ${slotDate} ${slotTime})`);
         } else {
             console.log(`Appointment on ${slotDate} at ${slotTime} is less than 30 minutes away or in the past. No reminder scheduled.`);
         }
