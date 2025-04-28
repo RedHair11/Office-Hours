@@ -21,7 +21,7 @@ const ProfessorAppointments = () => {
   
     // Convert selected Date object to same format as stored slotDate (e.g., "25_3_2025")
     const selectedDay = selectedDate.getDate();
-    const selectedMonth = selectedDate.getMonth(); // 0-indexed
+    const selectedMonth = selectedDate.getMonth() + 1; // 1-indexed
     const selectedYear = selectedDate.getFullYear();
     const formattedSelected = `${selectedDay}_${selectedMonth}_${selectedYear}`;
   
@@ -30,7 +30,7 @@ const ProfessorAppointments = () => {
   
   const hasAppointmentsOnDay = (date) => {
     const day = date.getDate();
-    const month = date.getMonth();
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
     const formattedDate = `${day}_${month}_${year}`;
   
