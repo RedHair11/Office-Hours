@@ -273,7 +273,7 @@ const bookAppointment = async (req, res) => {
         const appointmentDateTime = new Date(year, month - 1, day, hours, minutes, 0);
 
         // Calculate the reminder time (30 minutes before the appointment)
-        const reminderTime = new Date(appointmentDateTime.getTime() - 10 * 60 * 1000); // Subtract 30 minutes
+        const reminderTime = new Date(appointmentDateTime.getTime() - 15 * 60 * 1000); // Subtract 30 minutes
 
         console.log("Appointment DateTime:", appointmentDateTime);
         console.log("Calculated Reminder Time:", reminderTime);
