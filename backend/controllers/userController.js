@@ -5,6 +5,25 @@ import userModel from "../models/userModel.js"; // import the user model
 import professorModel from "../models/professorModel.js"; // import the professor model
 import appointmentModel from "../models/appointmentModel.js"; // import the appointment model
 import { v2 as cloudinary } from 'cloudinary' // for uploading images to Cloudinary
+import transporter from "../config/emailConfig.js"; // for sending email notifications when setting appointment
+import schedule from 'node-schedule'; // for sending email 30 minutes before appoinment
+
+// Helper function to format date from "DD_MM_YYYY" to "Month Day, Year"
+const formatSlotDate = (slotDate) => {
+    const [day, month, year] = slotDate.split('_').map(Number);
+    const date = new Date(year, month - 1, day); // Month is 0-indexed
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString(undefined, options);
+};
+
+// Helper function to format time from "HH:MM" (24-hour) to "h:MM AM/PM" (12-hour)
+const formatSlotTime = (slotTime) => {
+    const [hours, minutes] = slotTime.split(':').map(Number);
+    const date = new Date(2000, 0, 1, hours, minutes); // Use a dummy date
+    const options = { hour: 'numeric', minute: '2-digit', hour12: true };
+    return date.toLocaleTimeString(undefined, options);
+};
+
 
 // Function to register a new user
 const registerUser = async (req, res) => {
@@ -26,7 +45,7 @@ const registerUser = async (req, res) => {
         }
 
         // If the student ID is too long, return an error message
-        if (studentID.length > 9) { 
+        if (studentID.length > 9) {
             console.log('Student ID length check failed!'); // Add another log here
             return res.json({ success: false, message: "Please enter a student ID less than 9 characters." })
         }
@@ -50,10 +69,10 @@ const registerUser = async (req, res) => {
         }
 
          // Save the new user data in the database
-        const newUser = new userModel(userData)                            
-        const user = await newUser.save()   // Save the new user data in the database                                
+        const newUser = new userModel(userData)
+        const user = await newUser.save()
         // Create a token that contains the user's ID and is signed using the JWT secret key
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)    
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
 
         // Return the success message along with the generated token
         res.json({ success: true, token })
@@ -82,7 +101,7 @@ const loginUser = async (req, res) => {
 
         // Compare the entered password with the hashed password stored in the database
         const isMatch = await bcrypt.compare(password, user.password)
-        
+
         // If the passwords match, generate a JWT token and return it
         if (isMatch) {
             // Create a JWT with the user's ID and sign it using the secret key
@@ -111,7 +130,7 @@ const getProfile = async (req, res) => {
         // The '-password' excludes the password field from the returned user data
         const { userId } = req.body
         const userData = await userModel.findById(userId).select('-password')
-        
+
         // Return the user data with a success message
         res.json({ success: true, userData })
 
@@ -127,8 +146,8 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
 
     try {
-        // Destructure userId, name, and phone from the request body  
-        // Get the uploaded image file from the request (if any)          
+        // Destructure userId, name, and phone from the request body
+        // Get the uploaded image file from the request (if any)
         const { userId, name, phone} = req.body
         const imageFile = req.file
 
@@ -137,7 +156,7 @@ const updateProfile = async (req, res) => {
         if (!name || !phone) {
             return res.json({ success: false, message: "Data Missing" })
         }
-        
+
         // Update the user document in the database with the new name and phone number
         await userModel.findByIdAndUpdate(userId, { name, phone})
 
@@ -163,7 +182,7 @@ const updateProfile = async (req, res) => {
     }
 }
 
-// Function for booking an appointment with a professor 
+// Function for booking an appointment with a professor
 const bookAppointment = async (req, res) => {
 
     try {
@@ -176,11 +195,11 @@ const bookAppointment = async (req, res) => {
         if (!profData.available) {
             return res.json({ success: false, message: 'Professor Not Available' })
         }
-        
+
         // Get the list of already booked slots for the professor
         let slots_booked = profData.slots_booked
 
-        // Check if the selected date already has booked slots 
+        // Check if the selected date already has booked slots
         if (slots_booked[slotDate]) {
             // If the selected time slot is already booked, return error
             if (slots_booked[slotDate].includes(slotTime)) {
@@ -197,16 +216,18 @@ const bookAppointment = async (req, res) => {
         }
 
         // Get the user's details based on the userId (excluding password)
-        // Remove professor's booked slots before storing the appointment data
+        // Create a mutable copy of profData to safely delete properties
         const userData = await userModel.findById(userId).select("-password")
-        delete profData.slots_booked
+        const profDataForAppointment = { ...profData.toObject() };
+        delete profDataForAppointment.slots_booked;
+
 
         // Create the appointment data object with the necessary details
         const appointmentData = {
             userId,             // User ID
             profId,             // Professor ID
             userData,           // User data
-            profData,           // Professor data
+            profData: profDataForAppointment,           // Professor data
             slotTime,           // Slot time
             slotDate,           // Slot date
             date: Date.now()    // Current timestamp to track when the appointment was booked
@@ -219,6 +240,72 @@ const bookAppointment = async (req, res) => {
         // Save the updated slots booking data back to the professor's document in the database
         await professorModel.findByIdAndUpdate(profId, { slots_booked })
 
+        // --- Format Date and Time for Email ---
+        const formattedDate = formatSlotDate(slotDate);
+        const formattedTime = formatSlotTime(slotTime);
+        // --- End Formatting ---
+
+        // --- Add Immediate Email Sending Logic Here ---
+        const bookingMailOptions = {
+            from: process.env.EMAIL_USER, // Assuming EMAIL_USER is configured in .env for your chosen sending account
+            to: userData.email, // Send email to the user who booked
+            subject: 'Appointment Successfully Booked',
+            text: `Dear ${userData.name},\n\nYour appointment with Professor ${profData.name} has been successfully booked for ${formattedDate} at ${formattedTime}.\n\nThank you.`
+        };
+
+        transporter.sendMail(bookingMailOptions, (error, info) => {
+            if (error) {
+                console.error("Error sending booking confirmation email:", error);
+            } else {
+                console.log("Booking confirmation email sent:", info.response);
+            }
+        });
+        // --- End Immediate Email Sending Logic ---
+
+
+        // --- Add Reminder Scheduling Logic Here ---
+        // Parse the date and time from the stored format (e.g., "DD_MM_YYYY" and "HH:MM")
+        const [day, month, year] = slotDate.split('_').map(Number); // Use '_' as separator
+        const [hours, minutes] = slotTime.split(':').map(Number);
+
+        // Create a Date object for the appointment time
+        // Note: Month is 0-indexed in JavaScript Date objects (0 for January, 11 for December)
+        const appointmentDateTime = new Date(year, month - 1, day, hours, minutes, 0);
+
+        // Calculate the reminder time (30 minutes before the appointment)
+        const reminderTime = new Date(appointmentDateTime.getTime() - 5 * 60 * 1000); // Subtract 30 minutes
+
+        console.log("Appointment DateTime:", appointmentDateTime);
+        console.log("Calculated Reminder Time:", reminderTime);
+        console.log("Current Time:", new Date());
+        console.log("Is Reminder Time > Current Time?", reminderTime > new Date());
+
+        // Schedule the reminder email using node-schedule
+        // Only schedule if the reminder time is in the future
+        if (reminderTime > new Date()) {
+             schedule.scheduleJob(reminderTime, function() {
+                const reminderMailOptions = {
+                    from: process.env.EMAIL_USER, // Assuming EMAIL_USER is configured in .env
+                    to: userData.email,
+                    subject: 'Appointment Reminder (30 Minutes)',
+                    text: `Dear ${userData.name},\n\nJust a friendly reminder that your appointment with Professor ${profData.name} is in 5 minutes, at ${formattedTime} on ${formattedDate}. \n\nThank you.`
+                };
+
+                transporter.sendMail(reminderMailOptions, (error, info) => {
+                    if (error) {
+                        console.error("Error sending appointment reminder email:", error);
+                    } else {
+                        console.log("Appointment reminder email sent:", info.response);
+                    }
+                });
+            });
+             console.log(`Reminder scheduled for appointment on ${slotDate} at ${slotTime}`);
+        } else {
+            console.log(`Appointment on ${slotDate} at ${slotTime} is less than 30 minutes away or in the past. No reminder scheduled.`);
+        }
+        // --- End Reminder Scheduling Logic ---
+
+
         // Respond with success message
         res.json({ success: true, message: 'Appointment Booked' })
 
@@ -228,6 +315,7 @@ const bookAppointment = async (req, res) => {
         console.log(error)
         res.json({ success: false, message: error.message })
     }
+
 
 }
 
@@ -240,16 +328,16 @@ const cancelAppointment = async (req, res) => {
         const { userId, appointmentId } = req.body
         const appointmentData = await appointmentModel.findById(appointmentId)
 
-        // Verify if the user requesting the cancellation is the same as the one who booked the appointment 
+        // Verify if the user requesting the cancellation is the same as the one who booked the appointment
         // If the userId doesn't match, return an error for unauthorized action
         if (appointmentData.userId !== userId) {
             return res.json({ success: false, message: 'Unauthorized action' })
         }
-        
+
         // Proceed to mark the appointment as cancelled in the database
         await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
 
-        // Retrieve the professor's ID, slotDate, and slotTime from the cancelled appointment 
+        // Retrieve the professor's ID, slotDate, and slotTime from the cancelled appointment
         // Find the professor's data using profId
         const { profId, slotDate, slotTime } = appointmentData
         const professorData = await professorModel.findById(profId)
